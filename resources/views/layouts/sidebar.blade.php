@@ -41,7 +41,7 @@
         @endif
 
         {{-- Tenant Dashboard --}}
-        @if(auth()->user()->role === 'tenant')
+        @if(auth()->user()->role === 'tenant' || auth()->user()->role === 'admin')
             <li>
                 <a href="{{ route('tenant.dashboard') }}" class="{{ request()->routeIs('tenant.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-user"></i> <span>Tenant Dashboard</span>

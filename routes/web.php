@@ -62,7 +62,7 @@ Route::get('/landlord-dashboard', function () {
 
 Route::get('/tenant-dashboard', function () {
     return view('tenant.dashboard');
-})->middleware(['auth', 'role:tenant'])->name('tenant.dashboard');
+})->middleware(['auth','role:tenant|admin'])->name('tenant.dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
