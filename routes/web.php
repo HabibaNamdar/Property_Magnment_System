@@ -27,7 +27,7 @@ Route::get('/dashboard', function () {
         return app(PropertyController::class)->getCard();
     } else {
         // return view('tenant.dashboard');
-        return app(TenantLeaseController::class)->getCard();
+        return app(abstract: TenantLeaseController::class)->getCard();
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 

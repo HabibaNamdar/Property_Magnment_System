@@ -28,7 +28,7 @@ class TenantLeaseController extends Controller
         // Fetch ALL properties (regardless of user)
         $properties = Property::latest()->paginate(10);
 
-        return view('tenant.dashboard', compact('properties'));
+        return view('tenant.dashboard', compact(var_name: 'properties'));
     }
 
     // Sho
@@ -44,4 +44,35 @@ class TenantLeaseController extends Controller
 
         return view('tenant.leases.show', compact('lease'));
     }
+
+
+
+  public function store(Request $request)
+{
+    $tenant = auth()->user();
+    $propertyId = $request->input('property_id');
+
+    $exists = Lease::where('property_id', $propertyId)
+                   ->where('status', 'active')
+                   ->exists();
+
+    if ($exists) {
+        return redirect()->route('tenant.leases.index')
+                         ->with('error', 'This house is already booked.');
+    }
+
+    Lease::create([
+        'tenant_id'   => $tenant->id,
+        'property_id' => $propertyId,
+        'start_date'  => now(),
+        'status'      => 'active',
+        'rent_amount' => Property::findOrFail($propertyId)->rent_amount,
+    ]);
+
+    return redirect()->route('tenant.leases.index')
+                     ->with('success', 'House booked successfully!');
+}
+
+
+
 }

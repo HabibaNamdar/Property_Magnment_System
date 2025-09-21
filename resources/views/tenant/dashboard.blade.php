@@ -17,8 +17,18 @@
                     <p class="card-text"><strong>Rent:</strong> Rs {{ number_format($property->rent_amount,2) }}</p>
                     <p class="card-text"><strong>Status:</strong> {{ ucfirst($property->status) }}</p>
 
-                    <!-- Optional: View Details button -->
-                    <a href="{{ route('tenant.properties.show', $property->id) }}" class="btn btn-info btn-sm">View Details</a>
+                    <!-- Buttons side by side -->
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('tenant.properties.show', $property->id) }}" 
+                           class="btn btn-info w-50">
+                            View Details
+                        </a>
+
+                        <a href="{{ route('tenant.leases.store', $property->id) }}" 
+                           class="btn btn-success w-50">
+                            Buy
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

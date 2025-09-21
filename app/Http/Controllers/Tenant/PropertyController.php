@@ -24,5 +24,13 @@ class PropertyController extends Controller
         return view('tenant.properties.index', compact('properties'));
     }
 
+    public function show($id)
+{
+    // Find property by ID (404 if not found)
+    $property = Property::findOrFail($id);
+
+    return view('tenant.properties.show', compact('property'));
+}
+
     
 }
