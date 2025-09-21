@@ -1,37 +1,15 @@
 <?php
-
-// use App\Http\Controllers\ProfileController;
-// use Illuminate\Support\Facades\Route;
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-
-// require __DIR__.'/auth.php';
-
-
-
-
-
-
-
-
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+
+use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\Tenant\PropertyController as TenantPropertyController;
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
+
 
 // Dashboard route (role-based redirect to views)
 Route::get('/dashboard', function () {
@@ -40,11 +18,13 @@ Route::get('/dashboard', function () {
     if ($role === 'admin') {
         return view('admin.dashboard');
     } elseif ($role === 'landlord') {
-        return view('landlord.dashboard');
+
+        return app(PropertyController::class)->getCard();
     } else {
         return view('tenant.dashboard');
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 // Admin only panel
 Route::get('/admin-panel', function () {
@@ -58,7 +38,8 @@ Route::get('/admin-dashboard', function () {
 
 Route::get('/landlord-dashboard', function () {
     return view('landlord.dashboard');
-})->middleware(['auth', 'role:landlord'])->name('landlord.dashboard');
+})->middleware(['auth', 'role:landlord|admin'])->name('landlord.dashboard');
+
 
 Route::get('/tenant-dashboard', function () {
     return view('tenant.dashboard');
@@ -70,4 +51,40 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
+// Tenant can view their property (via lease)
+Route::middleware(['auth','role:tenant'])->get('/tenant/property', [\App\Http\Controllers\Tenant\PropertyController::class, '__invoke'])
+    ->name('tenant.property.show');
+
+// Public browsing (optional)
+Route::get('/properties', [\App\Http\Controllers\PropertyController::class, 'publicIndex'])->name('properties.index');
+Route::get('/properties/{property}', [\App\Http\Controllers\PropertyController::class, 'show'])->name('properties.show');
+
+
+Route::middleware(['auth','role:landlord|admin'])->prefix('landlord')->name('landlord.')->group(function(){
+    Route::resource('properties', PropertyController::class);
+});
+
+   
+
+
+
+Route::middleware(['auth','role:tenant'])->get('/tenant/property', TenantPropertyController::class)->name('tenant.property.show');
+
+
+
+
+
+
 require __DIR__.'/auth.php';
+
+
+
+
+
+
+
+
+
+

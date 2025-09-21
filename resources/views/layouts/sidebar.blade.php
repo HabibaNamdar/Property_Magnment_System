@@ -32,13 +32,13 @@
         @endif
 
         {{-- Landlord Dashboard --}}
-        @if(auth()->user()->role === 'landlord')
+        {{-- @if(auth()->user()->role === 'landlord' || auth()->user()->role === 'admin')
             <li>
                 <a href="{{ route('landlord.dashboard') }}" class="{{ request()->routeIs('landlord.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-user-tie"></i> <span>Landlord Dashboard</span>
                 </a>
             </li>
-        @endif
+        @endif --}}
 
         {{-- Tenant Dashboard --}}
         @if(auth()->user()->role === 'tenant' || auth()->user()->role === 'admin')
@@ -49,8 +49,17 @@
             </li>
         @endif
 
-        <li><a href="#"><i class="fas fa-building"></i> <span>Properties</span></a></li>
-        <li><a href="#"><i class="fas fa-users"></i> <span>Tenants</span></a></li>
+        {{-- <li><a href="landlord/properties"><i class="fas fa-building"></i> <span>Properties</span></a></li> --}}
+        
+        <li>
+           <a href="{{ route('landlord.properties.index') }}">
+             <i class="fas fa-building"></i> <span>Properties</span>
+              </a>
+           </li>
+
+    
+
+        {{-- <li><a href="#"><i class="fas fa-users"></i> <span>Tenants</span></a></li> --}}
         <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> <span>Payments</span></a></li>
         <li><a href="#"><i class="fas fa-tools"></i> <span>Maintenance</span></a></li>
         <li><a href="#"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
