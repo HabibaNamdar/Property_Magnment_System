@@ -19,9 +19,14 @@ class PropertyController extends Controller
    public function index()
     {
         // ✅ Fetch all properties instead of only user’s
+          $tenant = auth()->user();
+
         $properties = Property::latest()->paginate(10);
 
-        return view('tenant.properties.index', compact('properties'));
+        // Get the property_ids of leases for this tenant
+        $leases = $tenant->leases()->pluck('property_id')->toArray();
+
+        return view('tenant.properties.index', compact('properties', 'leases'));
     }
 
     public function show($id)
@@ -33,4 +38,6 @@ class PropertyController extends Controller
 }
 
     
+
+
 }

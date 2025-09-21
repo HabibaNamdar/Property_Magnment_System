@@ -11,10 +11,10 @@
     <p><strong>Status:</strong> {{ ucfirst($property->status) }}</p>
 
     <!-- Buy button -->
-    <form action="{{ route('tenant.leases.store', $property->id) }}" method="POST">
+    {{-- <form action="{{ route('tenant.leases.store', $property->id) }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-success">Buy</button>
-    </form>
+    </form> --}}
 
     <a href="{{ route('tenant.properties.index') }}" class="btn btn-secondary mt-2">Back</a>
 </div>

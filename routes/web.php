@@ -27,7 +27,9 @@ Route::get('/dashboard', function () {
         return app(PropertyController::class)->getCard();
     } else {
         // return view('tenant.dashboard');
-        return app(abstract: TenantLeaseController::class)->getCard();
+        // return app(abstract: TenantLeaseController::class)->getCard();
+        return app(TenantLeaseController::class)->getCard(auth()->user());
+
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -78,19 +80,24 @@ Route::middleware(['auth','role:landlord|admin'])->prefix('landlord')->name('lan
 
 // Tenant routes
 Route::middleware(['auth','role:tenant|admin'])->prefix('tenant')->name('tenant.')->group(function(){
+    Route::resource('maintenance', MaintenanceRequestController::class);
+});
+Route::middleware(['auth','role:tenant|admin'])->prefix('tenant')->name('tenant.')->group(function(){
     Route::resource('properties', TenantPropertyController::class);
 });
 
 Route::middleware(['auth','role:tenant|admin'])->prefix('tenant')->name('tenant.')->group(function(){
     Route::resource('leases', TenantLeaseController::class);
 });
-Route::middleware(['auth','role:tenant|admin'])->prefix('tenant')->name('tenant.')->group(function(){
-    Route::resource('maintenance', MaintenanceRequestController::class);
-});
+
 
 // Public property browsing
 Route::get('/properties', [PropertyController::class, 'publicIndex'])->name('properties.index');
 Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+
+
+
+
 
 
 

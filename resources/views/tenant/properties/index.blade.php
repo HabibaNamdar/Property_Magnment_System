@@ -56,14 +56,25 @@
                                     View Details
                                 </a>
 
-                                <form action="{{ route('tenant.leases.store') }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    <input type="hidden" name="property_id" value="{{ $property->id }}">
-                                    <button type="submit" class="btn btn-success w-100">Buy</button>
-                                </form>
+                                @if (in_array($property->id, $leases))
+                                    <form action="{{ route('tenant.leases.destroy', $property->id) }}" method="POST"
+                                        style="padding:0" >
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('tenant.leases.store') }}" method="POST"
+                                        style="padding:0">
+                                        @csrf
+                                        <input type="hidden" name="property_id" value="{{ $property->id }}">
+                                        <button type="submit" class="btn btn-success w-100">Buy</button>
+                                    </form>
+                                @endif
 
 
                             </div>
+
                         </div>
                     </div>
                 </div>
