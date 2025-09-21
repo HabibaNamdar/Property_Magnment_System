@@ -26,6 +26,7 @@ class Property extends Model
         return $this->belongsTo(User::class, 'landlord_id');
     }
 
+
     // Relationship: property has many leases
     public function leases()
     {

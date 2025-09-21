@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory; // ✅ import this
 
 class Lease extends Model
 {
@@ -18,3 +19,5 @@ class Lease extends Model
         return $this->belongsTo(User::class,'tenant_id');
     }
 }
+
+

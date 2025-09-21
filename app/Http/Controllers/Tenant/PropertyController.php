@@ -4,23 +4,25 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Property;
 
 class PropertyController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-        $lease = auth()->user()->leases()->with('property')->where('status','active')->first();
-
-        if (!$lease) {
-            return redirect()->route('dashboard')->with('info','No active lease assigned.');
-        }
-
-        return view('tenant.property.show', [
-            'property' => $lease->property,
-            'lease' => $lease,
-        ]);
+        //
     }
+        // Show landlord properties
+   public function index()
+    {
+        // ✅ Fetch all properties instead of only user’s
+        $properties = Property::latest()->paginate(10);
+
+        return view('tenant.properties.index', compact('properties'));
+    }
+
+    
 }

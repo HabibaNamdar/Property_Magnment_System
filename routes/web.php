@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\Tenant\PropertyController as TenantPropertyController;
 
+use App\Http\Controllers\Tenant\TenantLeaseController;
+use App\Http\Controllers\Tenant\MaintenanceRequestController;
+
+
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -21,7 +26,8 @@ Route::get('/dashboard', function () {
 
         return app(PropertyController::class)->getCard();
     } else {
-        return view('tenant.dashboard');
+        // return view('tenant.dashboard');
+        return app(TenantLeaseController::class)->getCard();
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -45,11 +51,15 @@ Route::get('/tenant-dashboard', function () {
     return view('tenant.dashboard');
 })->middleware(['auth','role:tenant|admin'])->name('tenant.dashboard');
 
+
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::middleware(['auth','role:tenant'])->get('/tenant/property', TenantPropertyController::class)->name('tenant.property.show');
 
 
 
@@ -61,23 +71,35 @@ Route::middleware(['auth','role:tenant'])->get('/tenant/property', [\App\Http\Co
 Route::get('/properties', [\App\Http\Controllers\PropertyController::class, 'publicIndex'])->name('properties.index');
 Route::get('/properties/{property}', [\App\Http\Controllers\PropertyController::class, 'show'])->name('properties.show');
 
-
+// Landlord routes
 Route::middleware(['auth','role:landlord|admin'])->prefix('landlord')->name('landlord.')->group(function(){
     Route::resource('properties', PropertyController::class);
 });
 
-   
+// Tenant routes
+Route::middleware(['auth','role:tenant|admin'])->prefix('tenant')->name('tenant.')->group(function(){
+    Route::resource('properties', TenantPropertyController::class);
+});
 
+Route::middleware(['auth','role:tenant|admin'])->prefix('tenant')->name('tenant.')->group(function(){
+    Route::resource('leases', TenantLeaseController::class);
+});
+Route::middleware(['auth','role:tenant|admin'])->prefix('tenant')->name('tenant.')->group(function(){
+    Route::resource('maintenance', MaintenanceRequestController::class);
+});
 
-
-Route::middleware(['auth','role:tenant'])->get('/tenant/property', TenantPropertyController::class)->name('tenant.property.show');
-
-
+// Public property browsing
+Route::get('/properties', [PropertyController::class, 'publicIndex'])->name('properties.index');
+Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
 
 
 
 require __DIR__.'/auth.php';
+
+
+
+
 
 
 
